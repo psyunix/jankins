@@ -440,7 +440,15 @@ Contributions are welcome! Please:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## � Documentation
+
+- 📖 **[GHCR Usage Guide](GHCR_USAGE.md)** - Using pre-built Docker images
+- 🔧 **[Jenkins Jobs Tutorial](JENKINS_JOBS_TUTORIAL.md)** - Creating jobs, installing software, automation
+- 🔒 **[Production Security Guide](PRODUCTION_SECURITY.md)** - Hardening for production deployment
+- ⚡ **[Quick Reference](QUICK_REFERENCE.md)** - Common commands and troubleshooting
+- 📋 **[Setup Summary](SETUP_SUMMARY.md)** - Complete setup explanation
+
+## �📝 License
 
 This project is open source and available under the MIT License.
 
