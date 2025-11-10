@@ -1,0 +1,95 @@
+name: Jenkins CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Jenkins Docker Image
+        run: |
+          docker build -f Dockerfile.jenkins -t jenkins-custom:latest .
+          
+      - name: Build Web Server Docker Image
+        run: |
+          docker build -f Dockerfile.webserver -t webserver-custom:latest .
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d
+          
+      - name: Wait for Jenkins to be ready
+        run: |
+          echo "Waiting for Jenkins to start..."
+          timeout 120 bash -c 'until curl -f http://localhost:8080/login 2>/dev/null; do sleep 5; done'
+          echo "Jenkins is ready!"
+
+      - name: Wait for Web Server to be ready
+        run: |
+          echo "Waiting for Web Server to start..."
+          timeout 60 bash -c 'until curl -f http://localhost:8081 2>/dev/null; do sleep 3; done'
+          echo "Web Server is ready!"
+
+      - name: Test Jenkins Health
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/login)
+          if [ $response -eq 200 ] || [ $response -eq 403 ]; then
+            echo "✅ Jenkins is running and healthy (HTTP $response)"
+          else
+            echo "❌ Jenkins health check failed (HTTP $response)"
+            exit 1
+          fi
+
+      - name: Test Web Server
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081)
+          if [ $response -eq 200 ]; then
+            echo "✅ Web Server is running and healthy"
+          else
+            echo "❌ Web Server health check failed (HTTP $response)"
+            exit 1
+          fi
+
+      - name: Test Web Server Content
+        run: |
+          content=$(curl -s http://localhost:8081)
+          if echo "$content" | grep -q "Test Web Server"; then
+            echo "✅ Web Server content is correct"
+          else
+            echo "❌ Web Server content check failed"
+            exit 1
+          fi
+
+      - name: Show Jenkins Logs
+        if: always()
+        run: |
+          echo "=== Jenkins Logs ==="
+          docker logs jenkins || true
+
+      - name: Show Web Server Logs
+        if: always()
+        run: |
+          echo "=== Web Server Logs ==="
+          docker logs webserver || true
+
+      - name: Show running containers
+        if: always()
+        run: |
+          docker ps -a
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker-compose down -v

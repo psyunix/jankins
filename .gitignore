@@ -1,0 +1,20 @@
+# Docker
+*.log
+docker-compose.override.yml
+
+# Jenkins
+jenkins_home/
+
+# MariaDB data
+mariadb_data/
+
+# Mac
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Environment files
+.env.local
+.env.*.local
