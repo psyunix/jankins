@@ -84,6 +84,14 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository }}/webserver:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository }}/webserver:buildcache,mode=max
 
+      - name: Test Web Server image
+        run: |
+          echo "Testing installed packages in web server image..."
+          docker run --rm ${{ env.REGISTRY }}/${{ github.repository }}/webserver:latest java -version
+          docker run --rm ${{ env.REGISTRY }}/${{ github.repository }}/webserver:latest vim --version
+          docker run --rm ${{ env.REGISTRY }}/${{ github.repository }}/webserver:latest mc --version
+          echo "✅ All packages verified"
+
       - name: Output image information
         run: |
           echo "### 🐳 Docker Images Published" >> $GITHUB_STEP_SUMMARY

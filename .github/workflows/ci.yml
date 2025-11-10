@@ -77,6 +77,12 @@ jobs:
             exit 1
           fi
 
+      - name: Test Java Installation
+        run: |
+          echo "Testing Java installation in web server..."
+          docker exec webserver java -version
+          echo "✅ Java is installed and working"
+
       - name: Show Jenkins Logs
         if: always()
         run: |
