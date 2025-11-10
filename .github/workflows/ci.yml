@@ -26,6 +26,11 @@ jobs:
         run: |
           docker build -f Dockerfile.webserver -t webserver-custom:latest .
 
+      - name: Install docker-compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Start services with Docker Compose
         run: |
           docker-compose up -d
