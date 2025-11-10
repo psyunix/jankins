@@ -30,7 +30,8 @@ This project provides a production-ready Jenkins CI/CD environment with:
 ## ✨ Features
 
 - 🐳 **Fully Dockerized** - All services run in isolated containers
-- 🔄 **Automated CI/CD** - GitHub Actions workflow for testing
+- � **Pre-built Images** - Pull from GitHub Container Registry (GHCR) for instant deployment
+- �🔄 **Automated CI/CD** - GitHub Actions workflow for testing and image building
 - 🌐 **Test Web Server** - Apache with PHP and MariaDB for integration testing
 - 📊 **Health Checks** - Automated service monitoring
 - 🔧 **Easy Configuration** - Simple docker-compose setup
@@ -84,16 +85,31 @@ docker-compose --version
 
 ## 🚀 Quick Start
 
-The fastest way to get everything running:
+### Option A: Use Pre-built Images (Fastest! ⚡)
 
-### 1. Clone the Repository
+No need to build Docker images locally - use our pre-built images from GitHub Container Registry:
+
+```bash
+git clone https://github.com/psyunix/jankins.git
+cd jankins
+chmod +x pull-and-run.sh
+./pull-and-run.sh
+```
+
+📖 [Read more about pre-built images](GHCR_USAGE.md)
+
+### Option B: Build Locally
+
+The traditional way - build Docker images on your machine:
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/psyunix/jankins.git
 cd jankins
 ```
 
-### 2. Run the Quick Start Script
+#### 2. Run the Quick Start Script
 
 ```bash
 chmod +x quickstart.sh
@@ -210,8 +226,11 @@ This project includes a complete CI/CD pipeline that automatically:
 - Pull requests to `main` or `master` branch
 - Manual trigger via GitHub Actions UI
 
-### Pipeline Steps
+### Workflows
 
+#### 1. Testing Pipeline (ci.yml)
+
+**Automated Testing:**
 1. **Checkout Code** - Clones the repository
 2. **Set up Docker Buildx** - Prepares multi-platform builds
 3. **Build Jenkins Image** - Builds custom Jenkins container
@@ -222,9 +241,25 @@ This project includes a complete CI/CD pipeline that automatically:
 8. **Log Collection** - Captures logs for debugging
 9. **Cleanup** - Removes containers and volumes
 
+#### 2. Build and Push Images (build-images.yml)
+
+**Automated Image Publishing:**
+1. **Build Docker Images** - Builds both Jenkins and Web Server images
+2. **Push to GHCR** - Publishes to GitHub Container Registry
+3. **Multi-tagging** - Tags with latest, main, version, and commit SHA
+4. **Layer Caching** - Optimizes build times
+
+**Published Images:**
+- `ghcr.io/psyunix/jankins/jenkins:latest`
+- `ghcr.io/psyunix/jankins/webserver:latest`
+
 ### View Workflow Results
 
 Visit: https://github.com/psyunix/jankins/actions
+
+### View Published Images
+
+Visit: https://github.com/psyunix?tab=packages
 
 ## 🧪 Testing
 
@@ -330,8 +365,11 @@ jankins/
 │   └── start.sh                # Container startup script
 ├── Dockerfile.jenkins          # Jenkins container definition
 ├── Dockerfile.webserver        # Web server container definition
-├── docker-compose.yml          # Service orchestration
+├── docker-compose.yml          # Service orchestration (local build)
+├── docker-compose.ghcr.yml     # Service orchestration (pre-built images)
 ├── quickstart.sh               # Quick start deployment script
+├── pull-and-run.sh             # Pull pre-built images and run
+├── GHCR_USAGE.md               # Guide for using pre-built images
 ├── .gitignore                  # Git ignore rules
 └── README.md                   # This file
 ```
