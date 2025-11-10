@@ -42,12 +42,30 @@ pipeline {
             }
             steps {
                 script {
-                    echo '🔄 Adding package update to Dockerfile...'
+                    echo '🛠 Adding package update to Dockerfile...'
                     sh '''
                         # Create updated Dockerfile with upgrade
-                        sed '/apt-get update/a\\    apt-get upgrade -y \\&\\&' Dockerfile.webserver > Dockerfile.webserver.tmp
+                        sed '/apt-get update/a\    apt-get upgrade -y \' Dockerfile.webserver > Dockerfile.webserver.tmp
                         mv Dockerfile.webserver.tmp Dockerfile.webserver
                     '''
+                }
+            }
+        }
+
+        stage('Check Docker Access') {
+            steps {
+                script {
+                    echo '🔍 Checking Docker daemon access...'
+                    def rc = sh(script: 'docker info > /dev/null 2>&1', returnStatus: true)
+                    if (rc != 0) {
+                        error '''Docker is not accessible from this Jenkins executor.
+Troubleshooting:
+ - Ensure /var/run/docker.sock is mounted into the Jenkins container/agent.
+ - Ensure the Jenkins user is in the docker group (GID matches that of the socket: ls -l /var/run/docker.sock).
+ - Or configure a proper Docker agent (e.g. docker cloud, k8s pod with dind).
+Aborting before attempting build stages.'''                    } else {
+                        sh 'docker version --format "Client {{.Client.Version}} | Server {{.Server.Version}}" || true'
+                    }
                 }
             }
         }
@@ -55,13 +73,13 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    echo '🏗️ Building Docker image...'
+                    echo '🔨 Building Docker image...'
                     sh """
-                        docker build -f Dockerfile.webserver \\
-                            -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest \\
-                            -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER} \\
-                            -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:${GIT_COMMIT.take(7)} \\
-                            .
+                        docker build -f Dockerfile.webserver \
+                          -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest \
+                          -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER} \
+                          -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:git-${GIT_COMMIT.take(7)} \
+                          .
                     """
                 }
             }
@@ -71,37 +89,26 @@ pipeline {
             steps {
                 script {
                     echo '🧪 Testing built image...'
-                    
-                    // Test if required tools are installed
                     sh """
                         echo 'Testing vim...'
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest which vim
-                        
                         echo 'Testing mc...'
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest which mc
-                        
                         echo 'Testing curl...'
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest curl --version
-                        
                         echo 'Testing PHP...'
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest php --version
-                    """
-                    
-                    // Start container and test web server
-                    sh """
+
                         echo 'Starting test container...'
-                        docker run -d --name test-webserver-${BUILD_NUMBER} \\
-                            -p 8082:80 \\
-                            ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest
-                        
-                        # Wait for web server to start
+                        docker run -d --name test-webserver-${BUILD_NUMBER} \
+                          -p 8082:80 \
+                          ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest
+
                         echo 'Waiting for web server...'
                         sleep 15
-                        
-                        # Test HTTP response
+
                         echo 'Testing HTTP response...'
                         curl -f http://localhost:8082/ || exit 1
-                        
                         echo '✅ All tests passed!'
                     """
                 }
@@ -116,8 +123,8 @@ pipeline {
                 script {
                     echo '🔐 Logging in to GitHub Container Registry...'
                     sh """
-                        echo '${DOCKER_CREDENTIALS_PSW}' | docker login ${GHCR_REGISTRY} \\
-                            -u '${DOCKER_CREDENTIALS_USR}' --password-stdin
+                        echo '${DOCKER_CREDENTIALS_PSW}' | docker login ${GHCR_REGISTRY} \
+                          -u '${DOCKER_CREDENTIALS_USR}' --password-stdin
                     """
                 }
             }
@@ -129,11 +136,11 @@ pipeline {
             }
             steps {
                 script {
-                    echo '📤 Pushing image to GitHub Container Registry...'
+                    echo '🚀 Pushing image to GitHub Container Registry...'
                     sh """
                         docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest
                         docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER}
-                        docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:${GIT_COMMIT.take(7)}
+                        docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:git-${GIT_COMMIT.take(7)}
                     """
                 }
             }
@@ -142,7 +149,7 @@ pipeline {
         stage('Cleanup Test Container') {
             steps {
                 script {
-                    echo '🧹 Cleaning up test container...'
+                    echo '🧼 Cleaning up test container...'
                     sh """
                         docker stop test-webserver-${BUILD_NUMBER} || true
                         docker rm test-webserver-${BUILD_NUMBER} || true
@@ -154,22 +161,35 @@ pipeline {
     
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
-            echo "📦 Image tags:"
+            echo '🎉 Pipeline completed successfully!'
+            echo "✅ Image tags:"
             echo "  - ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest"
             echo "  - ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER}"
-            echo "  - ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:${GIT_COMMIT.take(7)}"
+            echo "  - ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:git-${GIT_COMMIT.take(7)}"
         }
         failure {
-            echo '❌ Pipeline failed!'
+            echo '⚠️ Pipeline failed!'
         }
         always {
             script {
                 echo '🧹 Final cleanup...'
-                sh """
-                    docker logout ${GHCR_REGISTRY} || true
-                    docker system prune -f || true
-                """
+                def hasDocker = (sh(script: 'docker info > /dev/null 2>&1', returnStatus: true) == 0)
+                if (hasDocker) {
+                    echo 'Docker available, performing safe cleanup (no full system prune).'
+                    sh """
+                        # Logout (ignore errors)
+                        docker logout ${GHCR_REGISTRY} || true
+                        # Remove dangling images only
+                        docker image prune -f || true
+                        # Remove build-specific tags to free space (ignore if in use)
+                        docker rmi ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER} 2>/dev/null || true
+                        docker rmi ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:git-${GIT_COMMIT.take(7)} 2>/dev/null || true
+                        # Ensure test container gone
+                        docker rm -f test-webserver-${BUILD_NUMBER} 2>/dev/null || true
+                    """
+                } else {
+                    echo 'Skipping Docker cleanup: Docker not accessible (permission issue).'
+                }
             }
         }
     }
