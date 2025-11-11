@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Print banner
 echo -e "${BLUE}"
 echo "╔════════════════════════════════════════════════╗"
-echo "║     JANKINS - Pull Pre-built Images            ║"
+echo "║     JENKINS - Pull Pre-built Images            ║"
 echo "║     GitHub Container Registry (GHCR)           ║"
 echo "╚════════════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -38,8 +38,8 @@ print_warning() {
 }
 
 # Image names
-JENKINS_IMAGE="ghcr.io/psyunix/jankins/jenkins:latest"
-WEBSERVER_IMAGE="ghcr.io/psyunix/jankins/webserver:latest"
+JENKINS_IMAGE="ghcr.io/psyunix/jenkins/jenkins:latest"
+WEBSERVER_IMAGE="ghcr.io/psyunix/jenkins/webserver:latest"
 
 # Check if Docker is running
 print_info "Checking Docker installation..."

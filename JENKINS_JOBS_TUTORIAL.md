@@ -112,7 +112,7 @@ The `build-images.yml` workflow will automatically:
 - Push to GHCR with the new software installed
 - Tag it as `latest`
 
-Check progress: https://github.com/psyunix/jankins/actions
+Check progress: https://github.com/psyunix/jenkins/actions
 
 ---
 
@@ -161,7 +161,7 @@ pipeline {
     
     environment {
         GHCR_REGISTRY = 'ghcr.io'
-        GHCR_REPO = 'psyunix/jankins'
+        GHCR_REPO = 'psyunix/jenkins'
         IMAGE_NAME = 'webserver'
         DOCKER_CREDENTIALS = 'github-packages'
     }
@@ -169,7 +169,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/psyunix/jankins.git'
+                git branch: 'main', url: 'https://github.com/psyunix/jenkins.git'
             }
         }
         
@@ -292,7 +292,7 @@ pipeline {
     
     environment {
         GHCR_REGISTRY = 'ghcr.io'
-        GHCR_REPO = 'psyunix/jankins'
+        GHCR_REPO = 'psyunix/jenkins'
         IMAGE_NAME = 'webserver'
         DOCKER_CREDENTIALS = 'github-packages'
     }
@@ -300,7 +300,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/psyunix/jankins.git'
+                git branch: 'main', url: 'https://github.com/psyunix/jenkins.git'
             }
         }
         
@@ -494,7 +494,7 @@ EOF
    
    # Clone if not exists
    if [ ! -d ".git" ]; then
-       git clone https://github.com/psyunix/jankins.git .
+       git clone https://github.com/psyunix/jenkins.git .
    fi
    
    # Add tools to Dockerfile
@@ -502,10 +502,10 @@ EOF
    sed -i '/vim \\/a\    mc \\' Dockerfile.webserver
    
    # Build
-   docker build -f Dockerfile.webserver -t ghcr.io/psyunix/jankins/webserver:latest .
+   docker build -f Dockerfile.webserver -t ghcr.io/psyunix/jenkins/webserver:latest .
    
    # Test
-   docker run --rm ghcr.io/psyunix/jankins/webserver:latest which vim
+   docker run --rm ghcr.io/psyunix/jenkins/webserver:latest which vim
    
    echo "✅ Build complete!"
    ```
@@ -520,11 +520,11 @@ After the job completes:
 
 ```bash
 # Pull the new image
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 
 # Test it
-docker run --rm ghcr.io/psyunix/jankins/webserver:latest vim --version
-docker run --rm ghcr.io/psyunix/jankins/webserver:latest mc --version
+docker run --rm ghcr.io/psyunix/jenkins/webserver:latest vim --version
+docker run --rm ghcr.io/psyunix/jenkins/webserver:latest mc --version
 
 # Or start your stack with the new image
 docker-compose -f docker-compose.ghcr.yml pull

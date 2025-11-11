@@ -186,7 +186,7 @@ version: '3.8'
 
 services:
   jenkins:
-    image: ghcr.io/psyunix/jankins/jenkins:latest
+    image: ghcr.io/psyunix/jenkins/jenkins:latest
     container_name: jenkins
     restart: unless-stopped
     ports:
@@ -201,12 +201,12 @@ services:
     env_file:
       - .env
     networks:
-      - jankins-network
+      - jenkins-network
     secrets:
       - jenkins_admin_password
 
   webserver:
-    image: ghcr.io/psyunix/jankins/webserver:latest
+    image: ghcr.io/psyunix/jenkins/webserver:latest
     container_name: webserver
     restart: unless-stopped
     ports:
@@ -221,7 +221,7 @@ services:
     env_file:
       - .env
     networks:
-      - jankins-network
+      - jenkins-network
     secrets:
       - db_password
     healthcheck:
@@ -235,7 +235,7 @@ volumes:
     driver: local
 
 networks:
-  jankins-network:
+  jenkins-network:
     driver: bridge
     ipam:
       config:
@@ -307,10 +307,10 @@ services:
       - jenkins
       - webserver
     networks:
-      - jankins-network
+      - jenkins-network
 
   jenkins:
-    image: ghcr.io/psyunix/jankins/jenkins:latest
+    image: ghcr.io/psyunix/jenkins/jenkins:latest
     container_name: jenkins
     restart: unless-stopped
     expose:
@@ -322,10 +322,10 @@ services:
     env_file:
       - .env
     networks:
-      - jankins-network
+      - jenkins-network
 
   webserver:
-    image: ghcr.io/psyunix/jankins/webserver:latest
+    image: ghcr.io/psyunix/jenkins/webserver:latest
     container_name: webserver
     restart: unless-stopped
     expose:
@@ -335,13 +335,13 @@ services:
     env_file:
       - .env
     networks:
-      - jankins-network
+      - jenkins-network
 
 volumes:
   jenkins_home:
 
 networks:
-  jankins-network:
+  jenkins-network:
     driver: bridge
 ```
 
@@ -525,7 +525,7 @@ version: '3.8'
 
 services:
   webserver:
-    image: ghcr.io/psyunix/jankins/webserver:latest
+    image: ghcr.io/psyunix/jenkins/webserver:latest
     secrets:
       - db_password
       - db_root_password
@@ -606,7 +606,7 @@ networks:
 
 ```yaml
 networks:
-  jankins-network:
+  jenkins-network:
     driver: bridge
     ipam:
       config:
@@ -714,7 +714,7 @@ Create `/usr/local/bin/update-containers.sh`:
 ```bash
 #!/bin/bash
 
-cd /path/to/jankins
+cd /path/to/jenkins
 
 # Pull latest images
 docker-compose -f docker-compose.production.yml pull
@@ -744,8 +744,8 @@ tar zxvf trivy_*.tar.gz
 sudo mv trivy /usr/local/bin/
 
 # Scan images
-trivy image ghcr.io/psyunix/jankins/jenkins:latest
-trivy image ghcr.io/psyunix/jankins/webserver:latest
+trivy image ghcr.io/psyunix/jenkins/jenkins:latest
+trivy image ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 ---
@@ -776,7 +776,7 @@ services:
       - webserver
 
   jenkins:
-    image: ghcr.io/psyunix/jankins/jenkins:latest
+    image: ghcr.io/psyunix/jenkins/jenkins:latest
     container_name: jenkins-prod
     restart: unless-stopped
     expose:
@@ -801,7 +801,7 @@ services:
       start_period: 60s
 
   webserver:
-    image: ghcr.io/psyunix/jankins/webserver:latest
+    image: ghcr.io/psyunix/jenkins/webserver:latest
     container_name: webserver-prod
     restart: unless-stopped
     expose:
@@ -964,7 +964,7 @@ If compromised:
 
 4. **Scan for vulnerabilities:**
    ```bash
-   trivy image ghcr.io/psyunix/jankins/jenkins:latest
+   trivy image ghcr.io/psyunix/jenkins/jenkins:latest
    ```
 
 5. **Rebuild from clean images**

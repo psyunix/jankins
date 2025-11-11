@@ -1,8 +1,8 @@
-# 🚀 Jankins - Jenkins CI/CD with Docker & GitHub Actions
+# 🚀 Jenkins - Jenkins CI/CD with Docker & GitHub Actions
 
 A complete Jenkins CI/CD setup with automated deployment using GitHub Actions, Docker, and a test web server environment.
 
-[![CI/CD Pipeline](https://github.com/psyunix/jankins/actions/workflows/ci.yml/badge.svg)](https://github.com/psyunix/jankins/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/psyunix/jenkins/actions/workflows/ci.yml/badge.svg)](https://github.com/psyunix/jenkins/actions/workflows/ci.yml)
 
 ## 📋 Table of Contents
 
@@ -90,8 +90,8 @@ docker-compose --version
 No need to build Docker images locally - use our pre-built images from GitHub Container Registry:
 
 ```bash
-git clone https://github.com/psyunix/jankins.git
-cd jankins
+git clone https://github.com/psyunix/jenkins.git
+cd jenkins
 chmod +x pull-and-run.sh
 ./pull-and-run.sh
 ```
@@ -105,8 +105,8 @@ The traditional way - build Docker images on your machine:
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/psyunix/jankins.git
-cd jankins
+git clone https://github.com/psyunix/jenkins.git
+cd jenkins
 ```
 
 #### 2. Run the Quick Start Script
@@ -250,12 +250,12 @@ This project includes a complete CI/CD pipeline that automatically:
 4. **Layer Caching** - Optimizes build times
 
 **Published Images:**
-- `ghcr.io/psyunix/jankins/jenkins:latest`
-- `ghcr.io/psyunix/jankins/webserver:latest`
+- `ghcr.io/psyunix/jenkins/jenkins:latest`
+- `ghcr.io/psyunix/jenkins/webserver:latest`
 
 ### View Workflow Results
 
-Visit: https://github.com/psyunix/jankins/actions
+Visit: https://github.com/psyunix/jenkins/actions
 
 ### View Published Images
 
@@ -354,7 +354,7 @@ docker rmi jenkins-custom webserver-custom
 ## 📁 Project Structure
 
 ```
-jankins/
+jenkins/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml              # GitHub Actions workflow

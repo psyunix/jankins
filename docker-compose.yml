@@ -14,7 +14,7 @@ services:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - jankins-network
+      - jenkins-network
 
   webserver:
     build:
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./webserver:/var/www/html
     networks:
-      - jankins-network
+      - jenkins-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
@@ -39,5 +39,5 @@ volumes:
     driver: local
 
 networks:
-  jankins-network:
+  jenkins-network:
     driver: bridge
