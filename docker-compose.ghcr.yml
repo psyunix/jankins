@@ -4,7 +4,7 @@ services:
   jenkins:
     # Use pre-built image from GitHub Container Registry !!!
     # To build locally instead, comment the 'image' line and uncomment the 'build' section
-    image: ghcr.io/psyunix/jankins/jenkins:latest
+    image: ghcr.io/psyunix/jenkins/jenkins:latest
     # build:
     #   context: .
     #   dockerfile: Dockerfile.jenkins
@@ -17,12 +17,12 @@ services:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - jankins-network
+      - jenkins-network
 
   webserver:
     # Use pre-built image from GitHub Container Registry
     # To build locally instead, comment the 'image' line and uncomment the 'build' section
-    image: ghcr.io/psyunix/jankins/webserver:latest
+    image: ghcr.io/psyunix/jenkins/webserver:latest
     # build:
     #   context: .
     #   dockerfile: Dockerfile.webserver
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./webserver:/var/www/html
     networks:
-      - jankins-network
+      - jenkins-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
@@ -45,5 +45,5 @@ volumes:
     driver: local
 
 networks:
-  jankins-network:
+  jenkins-network:
     driver: bridge

@@ -8,7 +8,7 @@ pipeline {
     environment {
         // GitHub Container Registry configuration
         GHCR_REGISTRY = 'ghcr.io'
-        GHCR_REPO = 'psyunix/jankins'
+        GHCR_REPO = 'psyunix/jenkins'
         IMAGE_NAME = 'webserver'
         
         // Jenkins credentials ID (create this in Jenkins)

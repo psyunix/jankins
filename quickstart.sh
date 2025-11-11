@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Jankins Quick Start Script
+# Jenkins Quick Start Script
 # This script will build and start all services
 
 set -e
@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Print banner
 echo -e "${BLUE}"
 echo "╔════════════════════════════════════════════════╗"
-echo "║          JANKINS QUICK START SCRIPT            ║"
+echo "║          JENKINS QUICK START SCRIPT            ║"
 echo "║   Jenkins CI/CD + Web Server Deployment       ║"
 echo "╚════════════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -129,4 +129,4 @@ if command -v open &> /dev/null; then
     open http://localhost:8081 2>/dev/null || true
 fi
 
-print_success "Setup complete! Enjoy your Jankins deployment! 🚀"
+print_success "Setup complete! Enjoy your Jenkins deployment! 🚀"

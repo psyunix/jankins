@@ -6,8 +6,8 @@ This guide explains how to use the pre-built Docker images published to GitHub C
 
 The following images are automatically built and published on every push to the main branch:
 
-- **Jenkins:** `ghcr.io/psyunix/jankins/jenkins:latest`
-- **Web Server:** `ghcr.io/psyunix/jankins/webserver:latest`
+- **Jenkins:** `ghcr.io/psyunix/jenkins/jenkins:latest`
+- **Web Server:** `ghcr.io/psyunix/jenkins/webserver:latest`
 
 ## 🚀 Quick Start with Pre-built Images
 
@@ -28,8 +28,8 @@ This script will:
 
 ```bash
 # Pull latest images
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 
 # Start services
 docker-compose -f docker-compose.ghcr.yml up -d
@@ -39,10 +39,10 @@ docker-compose -f docker-compose.ghcr.yml up -d
 
 ```bash
 # Pull Jenkins image
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
 
 # Pull Web Server image
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 
 # Run Jenkins
 docker run -d \
@@ -50,13 +50,13 @@ docker run -d \
   -p 8080:8080 \
   -p 50000:50000 \
   -v jenkins_home:/var/jenkins_home \
-  ghcr.io/psyunix/jankins/jenkins:latest
+  ghcr.io/psyunix/jenkins/jenkins:latest
 
 # Run Web Server
 docker run -d \
   --name webserver \
   -p 8081:80 \
-  ghcr.io/psyunix/jankins/webserver:latest
+  ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 ## 🏷️ Available Tags
@@ -72,10 +72,10 @@ Images are tagged with multiple tags for flexibility:
 
 ```bash
 # Pull specific version
-docker pull ghcr.io/psyunix/jankins/jenkins:v1.0.0
+docker pull ghcr.io/psyunix/jenkins/jenkins:v1.0.0
 
 # Pull specific commit
-docker pull ghcr.io/psyunix/jankins/jenkins:main-abc123
+docker pull ghcr.io/psyunix/jenkins/jenkins:main-abc123
 ```
 
 ## 🔄 Automatic Image Builds
@@ -92,8 +92,8 @@ Visit your GitHub repository packages:
 - https://github.com/psyunix?tab=packages
 
 Or directly:
-- https://github.com/psyunix/jankins/pkgs/container/jankins%2Fjenkins
-- https://github.com/psyunix/jankins/pkgs/container/jankins%2Fwebserver
+- https://github.com/psyunix/jenkins/pkgs/container/jenkins%2Fjenkins
+- https://github.com/psyunix/jenkins/pkgs/container/jenkins%2Fwebserver
 
 ## 🔓 Image Visibility
 
@@ -118,7 +118,7 @@ If images are private, you need to authenticate:
 echo $YOUR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 # Now you can pull private images
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
 ```
 
 ## 📝 Update Your Local Setup
@@ -136,7 +136,7 @@ services:
     #   dockerfile: Dockerfile.jenkins
     
     # Add the image line
-    image: ghcr.io/psyunix/jankins/jenkins:latest
+    image: ghcr.io/psyunix/jenkins/jenkins:latest
 ```
 
 Or simply use the provided `docker-compose.ghcr.yml`:
@@ -151,8 +151,8 @@ Pull the latest versions:
 
 ```bash
 # Pull latest
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 
 # Recreate containers with new images
 docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
@@ -176,7 +176,7 @@ The build workflow (`.github/workflows/build-images.yml`) includes:
 ## 📊 Build Status
 
 Check the build status:
-- https://github.com/psyunix/jankins/actions/workflows/build-images.yml
+- https://github.com/psyunix/jenkins/actions/workflows/build-images.yml
 
 ## 🎯 Benefits of Pre-built Images
 
@@ -190,13 +190,13 @@ Check the build status:
 
 ```bash
 # View image details
-docker inspect ghcr.io/psyunix/jankins/jenkins:latest
+docker inspect ghcr.io/psyunix/jenkins/jenkins:latest
 
 # View image layers
-docker history ghcr.io/psyunix/jankins/jenkins:latest
+docker history ghcr.io/psyunix/jenkins/jenkins:latest
 
 # View image size
-docker images ghcr.io/psyunix/jankins/jenkins:latest
+docker images ghcr.io/psyunix/jenkins/jenkins:latest
 ```
 
 ## 🚀 Deploy Anywhere
@@ -205,8 +205,8 @@ Since images are in GHCR, you can deploy them anywhere:
 
 ```bash
 # On any server with Docker
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 docker-compose -f docker-compose.ghcr.yml up -d
 ```
 
@@ -238,8 +238,8 @@ GitHub Container Registry has generous limits:
 
 ```bash
 # 1. Clone repository (or just create a directory)
-git clone https://github.com/psyunix/jankins.git
-cd jankins
+git clone https://github.com/psyunix/jenkins.git
+cd jenkins
 
 # 2. Pull pre-built images and start
 ./pull-and-run.sh
@@ -252,8 +252,8 @@ cd jankins
 docker-compose -f docker-compose.ghcr.yml down
 
 # 5. Update to latest and restart
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
 ```
 

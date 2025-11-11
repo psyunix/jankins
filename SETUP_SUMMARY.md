@@ -1,4 +1,4 @@
-# 🎉 Jankins Setup Complete - Summary Report
+# 🎉 Jenkins Setup Complete - Summary Report
 
 ## ✅ Project Successfully Deployed
 
@@ -9,8 +9,8 @@ All components have been built, tested, and deployed successfully!
 ## 📊 What Was Built
 
 ### 1. **GitHub Repository** ✅
-- **Repository Name:** jankins
-- **URL:** https://github.com/psyunix/jankins
+- **Repository Name:** jenkins
+- **URL:** https://github.com/psyunix/jenkins
 - **Status:** Public repository created and initialized
 - **Commits:** All code pushed successfully
 
@@ -62,7 +62,7 @@ All components have been built, tested, and deployed successfully!
 - **Services:**
   - jenkins (port 8080, 50000)
   - webserver (port 8081)
-- **Networks:** jankins-network (bridge)
+- **Networks:** jenkins-network (bridge)
 - **Volumes:** jenkins_home (persistent storage)
 - **Health Checks:** Enabled for web server
 - **Status:** Fully operational
@@ -127,7 +127,7 @@ All components have been built, tested, and deployed successfully!
 ## 📂 Project Structure
 
 ```
-jankins/
+jenkins/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                 ✅ GitHub Actions workflow
@@ -212,7 +212,7 @@ The repository is configured with automated testing:
    - Tests database connectivity
 
 2. **View Results:**
-   - https://github.com/psyunix/jankins/actions
+   - https://github.com/psyunix/jenkins/actions
 
 3. **Manual Trigger:**
    - Go to Actions tab
@@ -225,7 +225,7 @@ The repository is configured with automated testing:
 
 ### Step 1: Repository Setup
 1. Created local git repository
-2. Created GitHub repository "jankins"
+2. Created GitHub repository "jenkins"
 3. Connected local to remote
 4. Configured .gitignore for Docker artifacts
 
@@ -250,7 +250,7 @@ The repository is configured with automated testing:
 
 ### Step 4: Docker Compose
 1. Defined two services (jenkins, webserver)
-2. Created isolated network (jankins-network)
+2. Created isolated network (jenkins-network)
 3. Configured port mappings
 4. Set up persistent volumes
 5. Added Docker socket mounting for Jenkins
@@ -385,10 +385,10 @@ All requested components have been successfully built and tested:
 6. ✅ **Quick Start:** One-command deployment script
 7. ✅ **Testing:** All services verified and operational
 
-**The Jankins project is ready for use!** 🎉
+**The Jenkins project is ready for use!** 🎉
 
 ---
 
 **Last Updated:** November 9, 2025  
-**Repository:** https://github.com/psyunix/jankins  
+**Repository:** https://github.com/psyunix/jenkins  
 **Status:** ✅ Production Ready

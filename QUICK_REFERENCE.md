@@ -5,10 +5,10 @@
 ### Pre-built Images (GitHub Container Registry)
 ```bash
 # Jenkins
-ghcr.io/psyunix/jankins/jenkins:latest
+ghcr.io/psyunix/jenkins/jenkins:latest
 
 # Web Server
-ghcr.io/psyunix/jankins/webserver:latest
+ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 ## 🎯 Quick Commands
@@ -37,8 +37,8 @@ docker-compose -f docker-compose.ghcr.yml down
 docker-compose -f docker-compose.ghcr.yml logs -f
 
 # Update images
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
 ```
 
@@ -62,8 +62,8 @@ docker-compose up -d --force-recreate
 
 #### Pull Images
 ```bash
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 #### Run Jenkins
@@ -74,7 +74,7 @@ docker run -d \
   -p 50000:50000 \
   -v jenkins_home:/var/jenkins_home \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/psyunix/jankins/jenkins:latest
+  ghcr.io/psyunix/jenkins/jenkins:latest
 ```
 
 #### Run Web Server
@@ -82,7 +82,7 @@ docker run -d \
 docker run -d \
   --name webserver \
   -p 8081:80 \
-  ghcr.io/psyunix/jankins/webserver:latest
+  ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 ## 🌐 Access URLs
@@ -152,8 +152,8 @@ docker-compose -f docker-compose.ghcr.yml down -v
 docker rmi jenkins-jenkins jenkins-webserver
 
 # Remove GHCR images
-docker rmi ghcr.io/psyunix/jankins/jenkins:latest
-docker rmi ghcr.io/psyunix/jankins/webserver:latest
+docker rmi ghcr.io/psyunix/jenkins/jenkins:latest
+docker rmi ghcr.io/psyunix/jenkins/webserver:latest
 ```
 
 ### Full Cleanup
@@ -175,8 +175,8 @@ docker system prune -a --volumes
 
 ### Update Pre-built Images
 ```bash
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
-docker pull ghcr.io/psyunix/jankins/webserver:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/webserver:latest
 docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
 ```
 
@@ -224,7 +224,7 @@ docker exec webserver mysql -u testuser -ptestpass123 testdb -e "SELECT * FROM u
 ### Check Network
 ```bash
 docker network ls
-docker network inspect jenkins_jankins-network
+docker network inspect jenkins_jenkins-network
 ```
 
 ### Check Volumes
@@ -273,7 +273,7 @@ docker exec webserver tail -f /var/log/mysql/error.log
 echo $GITHUB_TOKEN | docker login ghcr.io -u psyunix --password-stdin
 
 # Then pull
-docker pull ghcr.io/psyunix/jankins/jenkins:latest
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest
 ```
 
 ## 📚 Documentation
@@ -284,11 +284,11 @@ docker pull ghcr.io/psyunix/jankins/jenkins:latest
 
 ## 🔗 Links
 
-- **Repository:** https://github.com/psyunix/jankins
-- **Actions:** https://github.com/psyunix/jankins/actions
+- **Repository:** https://github.com/psyunix/jenkins
+- **Actions:** https://github.com/psyunix/jenkins/actions
 - **Packages:** https://github.com/psyunix?tab=packages
-- **CI Workflow:** https://github.com/psyunix/jankins/actions/workflows/ci.yml
-- **Build Workflow:** https://github.com/psyunix/jankins/actions/workflows/build-images.yml
+- **CI Workflow:** https://github.com/psyunix/jenkins/actions/workflows/ci.yml
+- **Build Workflow:** https://github.com/psyunix/jenkins/actions/workflows/build-images.yml
 
 ## ⚡ One-Liners
 
@@ -300,7 +300,7 @@ docker pull ghcr.io/psyunix/jankins/jenkins:latest
 ./quickstart.sh
 
 # Pull latest and restart
-docker pull ghcr.io/psyunix/jankins/jenkins:latest && docker pull ghcr.io/psyunix/jankins/webserver:latest && docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
+docker pull ghcr.io/psyunix/jenkins/jenkins:latest && docker pull ghcr.io/psyunix/jenkins/webserver:latest && docker-compose -f docker-compose.ghcr.yml up -d --force-recreate
 
 # View all logs
 docker-compose logs -f
