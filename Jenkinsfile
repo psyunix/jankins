@@ -7,11 +7,13 @@ pipeline {
     
     environment {
         // GitHub Container Registry configuration
+        // GHCR is used to store the built Docker images
         GHCR_REGISTRY = 'ghcr.io'
         GHCR_REPO = 'psyunix/jenkins'
         IMAGE_NAME = 'webserver'
         
         // Jenkins credentials ID (create this in Jenkins)
+        // This credential allows Jenkins to push images to GHCR
         DOCKER_CREDENTIALS = credentials('github-packages')
     }
     
@@ -32,6 +34,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '📦 Checking out source code...'
+                // Checkout the code from the repository that triggered this build
                 checkout scm
             }
         }
@@ -74,6 +77,8 @@ Aborting before attempting build stages.'''                    } else {
             steps {
                 script {
                     echo '🔨 Building Docker image...'
+                    // Build the Docker image for the web server
+                    // Tags: latest, build number, and git commit hash for versioning
                     sh """
                         docker build -f Dockerfile.webserver \
                           -t ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest \
@@ -89,6 +94,7 @@ Aborting before attempting build stages.'''                    } else {
             steps {
                 script {
                     echo '🧪 Testing built image...'
+                    // Run a series of tests to verify the image is correct
                     sh """
                         echo 'Testing vim...'
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest which vim
@@ -100,6 +106,7 @@ Aborting before attempting build stages.'''                    } else {
                         docker run --rm ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest php --version
 
                         echo 'Starting test container...'
+                        // Start a temporary container to test the web server functionality
                         docker run -d --name test-webserver-${BUILD_NUMBER} \
                           -p 8082:80 \
                           ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest
@@ -108,6 +115,7 @@ Aborting before attempting build stages.'''                    } else {
                         sleep 15
 
                         echo 'Testing HTTP response...'
+                        // Verify the web server responds to HTTP requests
                         curl -f http://localhost:8082/ || exit 1
                         echo '✅ All tests passed!'
                     """
@@ -137,6 +145,7 @@ Aborting before attempting build stages.'''                    } else {
             steps {
                 script {
                     echo '🚀 Pushing image to GitHub Container Registry...'
+                    // Push all tags to the registry
                     sh """
                         docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:latest
                         docker push ${GHCR_REGISTRY}/${GHCR_REPO}/${IMAGE_NAME}:build-${BUILD_NUMBER}
