@@ -9,6 +9,7 @@ A complete Jenkins CI/CD setup with automated deployment using GitHub Actions, D
 - [Overview](#overview)
 - [Features](#features)
 - [Architecture](#architecture)
+- [Detailed Architecture](#detailed-architecture)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Manual Setup](#manual-setup)
@@ -64,6 +65,59 @@ This project provides a production-ready Jenkins CI/CD environment with:
 │    (persistent)                (source files)          │
 └─────────────────────────────────────────────────────────┘
 ```
+
+## 📖 Detailed Architecture
+
+This repository provides a complete, containerized CI/CD (Continuous Integration/Continuous Deployment) environment using Jenkins and Docker. Its main purpose is to automatically build, test, and deploy a sample web application.
+
+Here’s a breakdown of the architecture:
+
+### 1. Core Services (Orchestrated by Docker Compose)
+
+The entire environment is managed by Docker Compose, which defines and runs the services. There are two main services that work together:
+
+*   **`jenkins` (The CI/CD Engine):**
+    *   This service runs the Jenkins automation server.
+    *   It's built from `Dockerfile.jenkins`.
+    *   It exposes port `8080` for the Jenkins web interface.
+    *   Crucially, it mounts the host's Docker socket (`/var/run/docker.sock`). This allows Jenkins to execute Docker commands, enabling it to build and run other Docker containers, a pattern often called "Docker-in-Docker" (though technically it's Docker-out-of-Docker).
+    *   It uses a persistent volume (`jenkins_home`) to store all its configuration, jobs, and build history, so you don't lose your setup when the container restarts.
+
+*   **`webserver` (The Application Under Test):**
+    *   This is a sample web application environment containing an Apache web server, PHP, and a MariaDB database.
+    *   It's built from `Dockerfile.webserver`.
+    *   It exposes port `8081` so you can access the web application.
+    *   It mounts the local `./webserver` directory into the container. This is great for development, as any changes you make to the PHP files on your machine are instantly reflected in the running container without needing to rebuild the image.
+
+These two services communicate over a shared Docker network (`jenkins-network`), which allows the Jenkins container to access the web server container for integration tests.
+
+### 2. Automation and Pipelines
+
+The repository uses two layers of automation:
+
+*   **GitHub Actions (for Repository-Level CI):**
+    *   Defined in the `.github/workflows` directory, these workflows handle tasks related to the GitHub repository itself.
+    *   `ci.yml`: This workflow automatically runs on pull requests or pushes to the `main` branch. It builds the Docker images and runs tests to ensure that new changes don't break the setup.
+    *   `build-images.yml`: This workflow is designed to build the Docker images and push them to the GitHub Container Registry (GHCR). This creates pre-built images that can be pulled and run quickly.
+
+*   **Jenkins Pipeline (for Application CI/CD):**
+    *   The `Jenkinsfile` defines a pipeline that runs inside the Jenkins server. This pipeline is focused on the lifecycle of the `webserver` application.
+    *   **Build:** It builds a new Docker image for the `webserver` application.
+    *   **Test:** It runs tests against the newly built image. For example, it starts a temporary container from the image and uses `curl` to ensure the web server is responding correctly.
+    *   **Push:** If the tests pass, it can push the new image to a container registry (in this case, GHCR), making it available for deployment.
+
+### How It All Works Together
+
+1.  **Local Development:** You can use `docker-compose up` to spin up the entire environment on your local machine. You can work on the web application code in the `webserver` directory, and your changes will be live.
+2.  **Committing Code:** When you push code changes to GitHub, the `ci.yml` GitHub Actions workflow kicks in to validate your changes.
+3.  **Building the Application:** You can trigger the Jenkins pipeline (either manually or automatically via a webhook). The Jenkins server, running inside its Docker container, will:
+    a. Check out the latest code.
+    b. Execute the steps in the `Jenkinsfile`.
+    c. Build a new `webserver` Docker image.
+    d. Test the image.
+    e. Push the new version to the container registry.
+
+In summary, this repository provides a robust, dual-pipeline architecture. **GitHub Actions** manages the CI for the infrastructure code itself, while **Jenkins** handles the CI/CD for the application that the infrastructure is built to serve. The use of **Docker Compose** makes it easy to run and manage the entire stack locally or in a testing environment.
 
 ## 📦 Prerequisites
 
