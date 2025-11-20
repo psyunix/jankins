@@ -1,6 +1,6 @@
 # 🔧 Jenkins Job Tutorial - Installing Software on Web Server
 
-This guide walks you through creating your first Jenkins job to install software on the web server and push the updated image to GitHub Container Registry.
+This guide walks you through creating your first Jenkins job to install software on the web server and push the updated image to GitHub Container Registry
 
 ## 📋 Table of Contents
 
